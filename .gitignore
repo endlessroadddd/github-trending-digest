@@ -1,0 +1,22 @@
+# 数据缓存
+data/
+*.json
+
+# 虚拟环境
+venv/
+.venv/
+env/
+.env
+
+# 日志
+logs/
+*.log
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
