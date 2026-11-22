@@ -181,4 +181,5 @@ if __name__ == "__main__":
         text = build_daily_message(categories, summary)
 
     print(f"[推送] 消息长度: {len(text)} 字符")
-    send_telegram(text)
+    if not send_telegram(text):
+        sys.exit(1)
