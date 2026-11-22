@@ -9,6 +9,7 @@ import json
 import sys
 import time
 from datetime import datetime
+from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
@@ -40,13 +41,12 @@ def scrape_github_trending(language=None, spoken_lang=None, since="daily") -> li
     params = {}
 
     if language and language != "Any":
-        params["languages"] = language
+        base_url += "/" + quote(language.strip().lower(), safe="")
     if spoken_lang and spoken_lang != "Any":
-        params["spoken"] = spoken_lang
+        params["spoken_language_code"] = spoken_lang
 
-    # 时间范围映射
-    since_map = {"daily": "", "weekly": "?since=weekly", "monthly": "?since=monthly"}
-    url = base_url + since_map.get(since, "")
+    if since != "daily":
+        params["since"] = since
 
     headers = {
         "User-Agent": (
@@ -58,9 +58,9 @@ def scrape_github_trending(language=None, spoken_lang=None, since="daily") -> li
     }
 
     print(f"[爬虫] 正在抓取 GitHub Trending ({since})...")
-    print(f"[爬虫] URL: {url}")
+    print(f"[爬虫] URL: {base_url}，参数: {params}")
 
-    response = requests.get(url, headers=headers, timeout=30)
+    response = requests.get(base_url, params=params, headers=headers, timeout=30)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
